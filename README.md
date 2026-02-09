@@ -2,6 +2,8 @@
 
 Ein vollständiges Browser-basiertes Multiplayer-Spiel des türkischen Rommé-Spiels "Okey".
 
+> Ein Okey-Multiplayer Spiel für unsere Seminararbeit Web Technologien
+
 ## 🎯 Projektziel
 
 Entwicklung einer modernen Web-Anwendung mit Echtzeit-Multiplayer-Funktionalität als Semesterprojekt. Fokus auf Code-Qualität, saubere Architektur und akademische Anforderungen.
