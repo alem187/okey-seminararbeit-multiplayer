@@ -1,55 +1,63 @@
 # 🎮 Okey Multiplayer - Semesterprojekt
 
-Ein vollständiges Browser-basiertes Multiplayer-Spiel des türkischen Rommé-Spiels "Okey".
+Ein vollständig funktionsfähiges Browser-basiertes Multiplayer-Spiel des türkischen Rommé-Spiels "Okey".
 
-> Ein Okey-Multiplayer Spiel für unsere Seminararbeit Web Technologien
+## 🎯 Über das Projekt
 
-## 🎯 Projektziel
+Dieses Projekt wurde als Seminararbeit für Web-Technologien entwickelt. Es handelt sich um eine vollständige Echtzeit-Multiplayer-Webanwendung mit konsolidierter Codestruktur, bei der alle Komponenten, Services und Modelle in einzelnen Dateien zusammengefasst sind.
 
-Entwicklung einer modernen Web-Anwendung mit Echtzeit-Multiplayer-Funktionalität als Semesterprojekt. Fokus auf Code-Qualität, saubere Architektur und akademische Anforderungen.
-
-## 🛠️ Tech-Stack
+## 🛠️ Technologien
 
 ### Backend
-- **Node.js** mit Express.js
-- **Socket.io** für Echtzeit-Kommunikation
-- In-Memory Storage (später optional: PostgreSQL/MongoDB)
+- **Node.js** mit Express.js - Web-Server
+- **Socket.io** - Echtzeit-Kommunikation zwischen Clients
+- In-Memory Storage - Spielzustands-Verwaltung
 
 ### Frontend
-- **React 18** mit Vite
-- **Tailwind CSS** für Styling
-- **Zustand** für State Management
-- **dnd-kit** für Drag & Drop
-- **Socket.io-client** für Websocket-Verbindung
+- **React 18** mit Vite - UI Framework & Build-Tool
+- **Tailwind CSS** - Utility-First Styling
+- **Zustand** - Leichtgewichtiges State Management
+- **@dnd-kit** - Drag & Drop für Spielsteine
+- **Socket.io-client** - WebSocket-Verbindung zum Server
+
+## ✨ Features
+
+- 🎮 **Vollständige Okey-Spielmechanik** - Alle Spielregeln implementiert
+- 👥 **Multiplayer-Lobby** - Erstelle/Trete Räumen bei (2-4 Spieler)
+- 🎯 **Drag & Drop Interface** - Intuitive Stein-Verwaltung
+- ⚡ **Echtzeit-Synchronisation** - Socket.io für Live-Updates
+- 🎨 **Modernes UI** - Responsive Design mit Tailwind CSS
+- 🔄 **Automatische Validierung** - Gewinn-Bedingungen werden geprüft
+- 🛠️ **Dev-Mode** (Ctrl+Shift+D) - Steine manuell bearbeiten zum Testen
 
 ## 📁 Projektstruktur
 
 ```
 okey-multiplayer/
-├── backend/          # Node.js Server
-│   ├── src/
-│   │   ├── config/   # Konfiguration
-│   │   ├── models/   # Datenmodelle
-│   │   ├── services/ # Business-Logik
-│   │   ├── utils/    # Hilfsfunktionen
-│   │   └── server.js # Hauptserver
-│   └── package.json
+├── backend/
+│   └── src/
+│       └── server.js        # Konsolidierter Backend-Code
+│                            # (Models, Services, Socket-Handler)
+├── frontend/
+│   └── src/
+│       ├── App.jsx          # Alle UI-Komponenten konsolidiert
+│       ├── store.js         # Zustand Stores + Socket Service
+│       └── utils/
+│           └── constants.js # Frontend-Konstanten
 │
-├── frontend/         # React App
-│   ├── src/
-│   │   ├── components/  # React-Komponenten
-│   │   ├── hooks/       # Custom Hooks
-│   │   ├── store/       # State Management
-│   │   └── services/    # API/Socket Services
-│   └── package.json
-│
-└── shared/          # Gemeinsame Konstanten/Typen
-    └── constants.js
+└── shared/
+    └── constants.js         # Gemeinsame Konstanten (Backend/Frontend)
 ```
+
+**Konsolidierte Architektur:** Alle zusammengehörigen Code-Teile sind in einzelnen Dateien gebündelt für bessere Übersicht und einfachere Wartung.
 
 ## 🚀 Installation & Start
 
-### Backend
+### Voraussetzungen
+- Node.js (>= 18.0.0)
+- npm
+
+### Backend starten
 
 ```bash
 cd backend
@@ -57,9 +65,9 @@ npm install
 npm run dev
 ```
 
-Der Server läuft auf `http://localhost:3001`
+Server läuft auf **http://localhost:3001**
 
-### Frontend
+### Frontend starten
 
 ```bash
 cd frontend
@@ -67,61 +75,93 @@ npm install
 npm run dev
 ```
 
-Die App läuft auf `http://localhost:5173`
+App läuft auf **http://localhost:5173**
+
+### Beide gleichzeitig starten
+Öffne zwei Terminals und führe die obigen Befehle parallel aus.
 
 ## 🎲 Spielregeln (Okey)
 
+**Okey** ist ein traditionelles türkisches Kachelspiel, ähnlich wie Rommé.
+
 ### Spielmaterial
-- 106 Steine total:
-  - 4 Farben (Rot, Schwarz, Blau, Gelb)
-  - Zahlen 1-13 (jeweils doppelt vorhanden)
-  - 2 falsche Joker
+- **106 Steine:** 4 Farben (Rot, Schwarz, Blau, Gelb) × 13 Zahlen × 2 Sets
+- **2 Joker** (falsche Joker)
 
 ### Spielablauf
-1. Jeder Spieler erhält 14 Steine
-2. Ein Indikator-Stein wird gezogen (bestimmt den Okey/Joker)
-3. Spieler ziehen und werfen Steine ab
-4. Ziel: Gültige Kombinationen bilden
+1. Jeder Spieler erhält **14 Steine**
+2. Ein **Indikator-Stein** wird gezogen → bestimmt den **Okey (Joker)**
+3. Spieler ziehen abwechselnd einen Stein (vom Stapel oder Ablage)
+4. Danach muss ein Stein abgeworfen werden
+5. Ziel: Alle 14 Steine in gültige Kombinationen bringen
 
-### Gewinn-Kombinationen
-- **Set**: 3-4 Steine gleicher Zahl, verschiedene Farben
-- **Run**: 3+ aufeinanderfolgende Steine gleicher Farbe
-- **Gewinn**: Alle Steine in gültigen Kombinationen + 1 Paar
+### Gewinn-Bedingungen
+Um zu gewinnen, müssen alle 14 Steine in folgenden Kombinationen organisiert sein:
 
-## 📡 Socket.io Events
+- **Set (Gruppe):** 3-4 Steine mit gleicher Zahl, aber verschiedenen Farben
+  - Beispiel: Rot 5, Blau 5, Gelb 5
+  
+- **Run (Sequenz):** 3+ aufeinanderfolgende Zahlen in der gleichen Farbe
+  - Beispiel: Rot 3, Rot 4, Rot 5, Rot 6
 
-### Client → Server
+- **Paar:** 2 identische Steine (für das letzte Paar)
+
+**Okey (Joker)** können als Ersatz für jeden beliebigen Stein verwendet werden.
+
+## 📡 Technische Details
+
+### Socket.io Events
+
+**Client → Server:**
 - `register_player` - Spieler registrieren
-- `create_room` - Raum erstellen
-- `join_room` - Raum beitreten
+- `create_room` - Neuen Raum erstellen
+- `join_room` - Bestehendem Raum beitreten
 - `leave_room` - Raum verlassen
 - `player_ready` - Bereitschaft signalisieren
-- `start_game` - Spiel starten
-- `send_move` - Spielzug senden
+- `start_game` - Spiel starten (nur Host)
+- `send_move` - Spielzug senden (draw/discard/declare)
 
-### Server → Client
+**Server → Client:**
 - `registration_success` - Registrierung bestätigt
-- `room_created` - Raum erstellt
-- `rooms_updated` - Raumliste aktualisiert
-- `player_joined` - Spieler beigetreten
-- `player_left` - Spieler verlassen
-- `game_started` - Spiel gestartet
-- `move_made` - Zug ausgeführt
+- `room_created` - Raum erfolgreich erstellt
+- `rooms_updated` - Aktualisierte Raumliste
+- `player_joined` / `player_left` - Spieler-Bewegungen
+- `game_started` - Spiel wurde gestartet
+- `game_state_updated` - Spielzustand aktualisiert
+- `game_over` - Spiel beendet (mit Gewinner)
 - `error` - Fehler aufgetreten
 
-## 🔧 Nächste Schritte
+### Implementierte Services (Backend)
 
-1. ✅ Backend-Server mit Socket.io implementiert
-2. ⏳ Frontend-Setup mit React + Vite
-3. ⏳ Lobby-System implementieren
-4. ⏳ Spiellogik entwickeln
-5. ⏳ Drag & Drop für Spielsteine
-6. ⏳ Gewinn-Validierung implementieren
-7. ⏳ UI/UX Design & Styling
+- **TileService** - Deck erstellen, mischen, verteilen
+- **ValidationService** - Gewinn-Bedingungen prüfen
+- **GameService** - Spiellogik (Züge, Spielzustand)
+- **Logger** - Strukturiertes Logging
 
-## 👥 Team
+## 🎮 Spielanleitung
 
-3 Studenten - Semesterprojekt
+1. **Registrierung:** Benutzernamen eingeben
+2. **Lobby:** Raum erstellen oder bestehendem beitreten
+3. **Warten:** Auf weitere Spieler warten (mind. 2, max. 4)
+4. **Spiel starten:** Host startet das Spiel
+5. **Spielen:**
+   - Stein vom Stapel oder Ablage ziehen
+   - Steine per Drag & Drop sortieren
+   - Stein zum Abwerfen auswählen
+   - "Zug beenden" oder "Okey erklären" (bei Gewinn)
+6. **Gewinnen:** Alle Steine in gültigen Kombinationen → "Okey erklären"
+
+## 🛠️ Dev-Modus
+
+Drücke **Ctrl+Shift+D** im Spiel um den Entwickler-Modus zu öffnen:
+- Steine manuell bearbeiten (Farbe, Zahl, Joker)
+- Gültige Hand automatisch generieren zum Testen
+- Hilfreich für Debugging und Präsentationen
+
+## 👥 Autoren
+
+Semesterprojekt - Web Technologien  
+3 Studenten
 
 ## 📝 Lizenz
 
