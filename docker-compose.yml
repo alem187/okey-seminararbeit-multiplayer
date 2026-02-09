@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: okey-backend
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - FRONTEND_URL=http://localhost
+    restart: unless-stopped
+    networks:
+      - okey-network
+
+  frontend:
+    build: ./frontend
+    container_name: okey-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - okey-network
+
+networks:
+  okey-network:
+    driver: bridge

@@ -54,31 +54,65 @@ okey-multiplayer/
 ## 🚀 Installation & Start
 
 ### Voraussetzungen
-- Node.js (>= 18.0.0)
-- npm
 
-### Backend starten
+### Option 1: Lokal mit npm (Development)
 
+**Backend starten:**
 ```bash
 cd backend
 npm install
 npm run dev
 ```
-
 Server läuft auf **http://localhost:3001**
 
-### Frontend starten
 
+**Frontend starten:**
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-
 App läuft auf **http://localhost:5173**
 
-### Beide gleichzeitig starten
-Öffne zwei Terminals und führe die obigen Befehle parallel aus.
+
+### Option 2: Docker (Production)
+
+**Mit Docker Compose (empfohlen):**
+```bash
+# Alle Container bauen und starten
+docker-compose up --build
+
+# Im Hintergrund laufen lassen
+docker-compose up -d
+
+# Stoppen
+docker-compose down
+```
+
+App läuft auf **http://localhost** (Port 80)  
+Backend läuft auf **http://localhost:3001**
+
+**Einzelne Container:**
+```bash
+# Backend
+cd backend
+docker build -t okey-backend .
+docker run -p 3001:3001 okey-backend
+
+# Frontend
+cd frontend
+docker build -t okey-frontend .
+docker run -p 80:80 okey-frontend
+```
+
+### Deployment auf Cloud-Plattformen
+
+Die containerisierte App kann einfach deployed werden auf:
+- **Render.com** (kostenlos)
+- **Railway.app** (kostenlos)
+- **Fly.io** (kostenlos)
+- **DigitalOcean App Platform**
+- **AWS / Google Cloud / Azure**
 
 ## 🎲 Spielregeln (Okey)
 
