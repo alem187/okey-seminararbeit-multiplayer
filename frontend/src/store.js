@@ -7,7 +7,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { create } from 'zustand'
 import { io } from 'socket.io-client'
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost' ? 'https://okey-seminararbeit-multiplayer.onrender.com' : 'http://localhost:3001')
+const SERVER_URL = 'https://okey-seminararbeit-multiplayer.onrender.com'
 
 // ==========================================
 // SOCKET-SERVICE
