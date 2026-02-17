@@ -12,14 +12,10 @@ import {
   useSensor,
   useSensors,
   DragOverlay,
-  useDroppable
+  useDroppable,
+  useDraggable
 } from '@dnd-kit/core'
-import {
-  SortableContext,
-  rectSortingStrategy,
-  arrayMove,
-  useSortable
-} from '@dnd-kit/sortable'
+ 
 import { CSS } from '@dnd-kit/utilities'
 
 // ==========================================
@@ -204,7 +200,7 @@ function Tile({ tile, isDraggable = true, isSelected = false, onClick = null, si
     transform,
     transition,
     isDragging
-  } = useSortable({ 
+  } = useDraggable({ 
     id: tile?.id || 'invalid-tile',
     disabled: !isDraggable || !isValidTile
   })
@@ -471,16 +467,14 @@ function PlayerHand({ tiles, onTilesReorder, onTileSelect, selectedTileId = null
         )}
         
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-          <SortableContext items={items.filter(Boolean).map(t => t.id)} strategy={rectSortingStrategy}>
-            <div className="rounded-2xl p-3 bg-gradient-to-b from-amber-900/25 via-slate-900/20 to-amber-950/30 border border-amber-700/20 shadow-inner">
-              <div className="flex flex-col gap-2">
-                <div className="flex gap-2 items-start">{renderRow(0, 10)}</div>
-                <div className="flex gap-2 items-start">{renderRow(10, 10)}</div>
-              </div>
-              <div className="mt-2 text-xs text-white/50">Tipp: Ziehen zum Umordnen, Klick zum Auswählen.</div>
+          <div className="rounded-2xl p-3 bg-gradient-to-b from-amber-900/25 via-slate-900/20 to-amber-950/30 border border-amber-700/20 shadow-inner">
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-2 items-start">{renderRow(0, 10)}</div>
+              <div className="flex gap-2 items-start">{renderRow(10, 10)}</div>
             </div>
-          </SortableContext>
-           
+            <div className="mt-2 text-xs text-white/50">Tipp: Ziehen zum Umordnen, Klick zum Auswählen.</div>
+          </div>
+
           <DragOverlay>
             {activeTile ? (<div style={{ cursor: 'grabbing' }}><Tile tile={activeTile} size="md" isDraggable={false} /></div>) : null}
           </DragOverlay>
