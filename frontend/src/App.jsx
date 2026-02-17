@@ -269,7 +269,7 @@ function Tile({ tile, isDraggable = true, isSelected = false, onClick = null, si
 // ==========================================
 function PlayerHand({ tiles, onTilesReorder, onTileSelect, selectedTileId = null, canDiscard = false }) {
   const validTiles = Array.isArray(tiles) ? tiles.filter(t => t && t.id && typeof t.id === 'string') : []
-  const rackSlotCount = 15
+  const rackSlotCount = 20
 
   const buildRackFromTiles = (tileList) => {
     const next = Array.from({ length: rackSlotCount }, () => null)
@@ -433,11 +433,6 @@ function PlayerHand({ tiles, onTilesReorder, onTileSelect, selectedTileId = null
     for (let rowIndex = 0; rowIndex < count; rowIndex++) {
       const slotIndex = startIndex + rowIndex
       const tile = items?.[slotIndex] ?? null
-
-      if (rowIndex === 4) {
-        cells.push(<div key={`spacer-${slotIndex}`} className="w-4" />)
-      }
-
       cells.push(<RackSlot key={`slot-${slotIndex}`} slotIndex={slotIndex} tile={tile} />)
     }
     return cells
@@ -464,7 +459,7 @@ function PlayerHand({ tiles, onTilesReorder, onTileSelect, selectedTileId = null
               🔢 Zahl
             </button>
           </div>
-          <span className="badge badge-info">{items?.length || 0} Steine</span>
+          <span className="badge badge-info">{items?.filter(Boolean).length || 0} Steine</span>
         </div>
       </div>
 
@@ -479,8 +474,8 @@ function PlayerHand({ tiles, onTilesReorder, onTileSelect, selectedTileId = null
           <SortableContext items={items.filter(Boolean).map(t => t.id)} strategy={rectSortingStrategy}>
             <div className="rounded-2xl p-3 bg-gradient-to-b from-amber-900/25 via-slate-900/20 to-amber-950/30 border border-amber-700/20 shadow-inner">
               <div className="flex flex-col gap-2">
-                <div className="flex gap-2 items-start">{renderRow(0, 8)}</div>
-                <div className="flex gap-2 items-start">{renderRow(8, 7)}</div>
+                <div className="flex gap-2 items-start">{renderRow(0, 10)}</div>
+                <div className="flex gap-2 items-start">{renderRow(10, 10)}</div>
               </div>
               <div className="mt-2 text-xs text-white/50">Tipp: Ziehen zum Umordnen, Klick zum Auswählen.</div>
             </div>
@@ -1101,6 +1096,22 @@ function Board() {
                   <li>Wähle einen Stein zum Abwerfen</li>
                   <li>Entscheide: Zug beenden oder Gewinnen</li>
                 </ol>
+              </div>
+              <div className="p-3 bg-emerald-500/10 rounded-lg">
+                <p className="text-sm text-emerald-300 font-semibold mb-1">Regeln (Kurz):</p>
+                <ul className="text-xs text-gray-300 space-y-1 list-disc list-inside">
+                  <li>Ziel: Lege alle Steine in gültigen Gruppen ab.</li>
+                  <li>Hand: Du hältst 14 Steine, der Startspieler 15.</li>
+                  <li>Gültige Gruppen sind:</li>
+                </ul>
+                <ul className="mt-1 text-xs text-gray-300 space-y-1 list-disc list-inside ml-4">
+                  <li>Folge: gleiche Farbe, aufeinanderfolgende Zahlen (z.B. 5-6-7).</li>
+                  <li>Drilling/Vierer: gleiche Zahl in verschiedenen Farben.</li>
+                </ul>
+                <ul className="mt-1 text-xs text-gray-300 space-y-1 list-disc list-inside">
+                  <li>Joker (Okey) kann jeden Stein ersetzen.</li>
+                  <li>Gewinn: Nach dem Ziehen ordnest du deine Hand komplett in Gruppen und wirfst den letzten Stein ab.</li>
+                </ul>
               </div>
             </div>
           </div>
