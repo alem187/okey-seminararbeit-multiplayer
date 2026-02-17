@@ -1029,6 +1029,15 @@ function Board() {
             </div>
           </div>
         )}
+        {/* Player's Hand */}
+        <PlayerHand
+          tiles={actualHand || []}
+          onTilesReorder={handleTilesReorder}
+          onTileSelect={handleSelectDiscard}
+          selectedTileId={selectedTiles[0] || null}
+          canDiscard={isMyTurn && currentPlayer?.hasDrawn}
+        />
+
         {/* Game Header */}
         <div className="card bg-slate-800/90">
           <div className="flex items-center justify-between">
@@ -1195,14 +1204,6 @@ function Board() {
           </div>
         </div>
 
-        {/* Player's Hand */}
-        <PlayerHand
-          tiles={actualHand || []}
-          onTilesReorder={handleTilesReorder}
-          onTileSelect={handleSelectDiscard}
-          selectedTileId={selectedTiles[0] || null}
-          canDiscard={isMyTurn && currentPlayer?.hasDrawn}
-        />
       </div>
     </div>
   )
