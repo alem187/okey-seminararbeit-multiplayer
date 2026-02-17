@@ -307,7 +307,6 @@ function PlayerHand({ tiles, onTilesReorder, onTileSelect, selectedTileId = null
   
   const [items, setItems] = useState(buildRackFromTiles(validTiles))
   const [activeId, setActiveId] = useState(null)
-  const [overId, setOverId] = useState(null)
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -317,14 +316,9 @@ function PlayerHand({ tiles, onTilesReorder, onTileSelect, selectedTileId = null
 
   const handleDragStart = (event) => setActiveId(event.active.id)
 
-  const handleDragOver = (event) => {
-    setOverId(event.over?.id ?? null)
-  }
-
   const handleDragEnd = (event) => {
     const { active, over } = event
     setActiveId(null)
-    setOverId(null)
 
     if (!over || active.id === over.id) return
 
@@ -361,25 +355,6 @@ function PlayerHand({ tiles, onTilesReorder, onTileSelect, selectedTileId = null
     }
   }
 
-  const resolveSlotIndex = (currentRack, id) => {
-    if (typeof id === 'string' && id.startsWith('slot-')) {
-      const parsed = Number(id.slice('slot-'.length))
-      return Number.isFinite(parsed) ? parsed : -1
-    }
-    return currentRack.findIndex(t => t?.id === id)
-  }
-
-  const previewItems = (() => {
-    if (!activeId || !overId) return items
-    const oldIndex = resolveSlotIndex(items, activeId)
-    const newIndex = resolveSlotIndex(items, overId)
-    if (oldIndex < 0 || newIndex < 0 || oldIndex === newIndex) return items
-    const next = [...items]
-    const tmp = next[newIndex]
-    next[newIndex] = next[oldIndex]
-    next[oldIndex] = tmp ?? null
-    return next
-  })()
 
   const handleSort = (mode) => {
     const currentTiles = Array.isArray(items) ? items.filter(Boolean) : []
@@ -454,7 +429,7 @@ function PlayerHand({ tiles, onTilesReorder, onTileSelect, selectedTileId = null
     const cells = []
     for (let rowIndex = 0; rowIndex < count; rowIndex++) {
       const slotIndex = startIndex + rowIndex
-      const tile = previewItems?.[slotIndex] ?? null
+      const tile = items?.[slotIndex] ?? null
       cells.push(<RackSlot key={`slot-${slotIndex}`} slotIndex={slotIndex} tile={tile} />)
     }
     return cells
@@ -492,7 +467,7 @@ function PlayerHand({ tiles, onTilesReorder, onTileSelect, selectedTileId = null
           </div>
         )}
         
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
           <div className="rounded-2xl p-3 bg-gradient-to-b from-amber-900/25 via-slate-900/20 to-amber-950/30 border border-amber-700/20 shadow-inner">
             <div className="flex flex-col gap-2">
               <div className="flex gap-2 items-start">{renderRow(0, 10)}</div>
