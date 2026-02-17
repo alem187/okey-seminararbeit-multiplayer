@@ -3,7 +3,7 @@
  * Alle Komponenten in eine Datei integriert
  */
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { socketService, useSocket, useUserStore, useGameStore } from './store'
 import { 
   DndContext, 
@@ -307,6 +307,7 @@ function PlayerHand({ tiles, onTilesReorder, onTileSelect, selectedTileId = null
   
   const [items, setItems] = useState(buildRackFromTiles(validTiles))
   const [activeId, setActiveId] = useState(null)
+  const [overId, setOverId] = useState(null)
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -316,9 +317,14 @@ function PlayerHand({ tiles, onTilesReorder, onTileSelect, selectedTileId = null
 
   const handleDragStart = (event) => setActiveId(event.active.id)
 
+  const handleDragOver = (event) => {
+    setOverId(event.over?.id ?? null)
+  }
+
   const handleDragEnd = (event) => {
     const { active, over } = event
     setActiveId(null)
+    setOverId(null)
 
     if (!over || active.id === over.id) return
 
@@ -354,6 +360,26 @@ function PlayerHand({ tiles, onTilesReorder, onTileSelect, selectedTileId = null
       onTileSelect(tile.id === selectedTileId ? null : tile.id)
     }
   }
+
+  const resolveSlotIndex = (currentRack, id) => {
+    if (typeof id === 'string' && id.startsWith('slot-')) {
+      const parsed = Number(id.slice('slot-'.length))
+      return Number.isFinite(parsed) ? parsed : -1
+    }
+    return currentRack.findIndex(t => t?.id === id)
+  }
+
+  const previewItems = (() => {
+    if (!activeId || !overId) return items
+    const oldIndex = resolveSlotIndex(items, activeId)
+    const newIndex = resolveSlotIndex(items, overId)
+    if (oldIndex < 0 || newIndex < 0 || oldIndex === newIndex) return items
+    const next = [...items]
+    const tmp = next[newIndex]
+    next[newIndex] = next[oldIndex]
+    next[oldIndex] = tmp ?? null
+    return next
+  })()
 
   const handleSort = (mode) => {
     const currentTiles = Array.isArray(items) ? items.filter(Boolean) : []
@@ -428,7 +454,7 @@ function PlayerHand({ tiles, onTilesReorder, onTileSelect, selectedTileId = null
     const cells = []
     for (let rowIndex = 0; rowIndex < count; rowIndex++) {
       const slotIndex = startIndex + rowIndex
-      const tile = items?.[slotIndex] ?? null
+      const tile = previewItems?.[slotIndex] ?? null
       cells.push(<RackSlot key={`slot-${slotIndex}`} slotIndex={slotIndex} tile={tile} />)
     }
     return cells
@@ -466,7 +492,7 @@ function PlayerHand({ tiles, onTilesReorder, onTileSelect, selectedTileId = null
           </div>
         )}
         
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
           <div className="rounded-2xl p-3 bg-gradient-to-b from-amber-900/25 via-slate-900/20 to-amber-950/30 border border-amber-700/20 shadow-inner">
             <div className="flex flex-col gap-2">
               <div className="flex gap-2 items-start">{renderRow(0, 10)}</div>
@@ -545,6 +571,85 @@ function DiscardPile({ tiles, onDrawFromDiscard, canDraw = false }) {
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+// ==========================================
+// CHAT-PANEL-KOMPONENTE
+// ==========================================
+function ChatPanel({ roomId, title = 'Chat' }) {
+  const { user } = useUserStore()
+  const chatMessagesByRoom = useGameStore((state) => state.chatMessagesByRoom)
+  const addChatMessage = useGameStore((state) => state.addChatMessage)
+  const [message, setMessage] = useState('')
+  const listRef = useRef(null)
+
+  useEffect(() => {
+    if (!roomId) return undefined
+    const unsubscribe = socketService.on('chatMessage', (data) => {
+      addChatMessage(roomId, data)
+    })
+    return () => unsubscribe()
+  }, [roomId, addChatMessage])
+
+  const messages = chatMessagesByRoom?.[roomId] || []
+
+  useEffect(() => {
+    if (listRef.current) {
+      listRef.current.scrollTop = listRef.current.scrollHeight
+    }
+  }, [messages.length, roomId])
+
+  const handleSend = (e) => {
+    e.preventDefault()
+    const text = message.trim()
+    if (!text || !roomId) return
+    socketService.sendChatMessage(roomId, text)
+    setMessage('')
+  }
+
+  return (
+    <div className="card bg-slate-800/90">
+      <h3 className="text-lg font-semibold mb-3">{title}</h3>
+      <div ref={listRef} className="h-56 overflow-y-auto space-y-2 pr-1">
+        {messages.length === 0 ? (
+          <div className="text-xs text-gray-400 text-center py-6">
+            Noch keine Nachrichten
+          </div>
+        ) : (
+          messages.map((msg, index) => {
+            const isMine = msg.playerId === user?.id
+            const timeLabel = msg.timestamp
+              ? new Date(msg.timestamp).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
+              : ''
+            return (
+              <div key={`${msg.playerId}-${msg.timestamp}-${index}`} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[85%] rounded-lg px-3 py-2 text-xs ${isMine ? 'bg-blue-600/80 text-white' : 'bg-slate-700/70 text-gray-100'}`}>
+                  <div className="flex items-center gap-2 text-[10px] text-gray-300 mb-1">
+                    <span className="font-semibold text-gray-100">{msg.username || 'Unbekannt'}</span>
+                    {timeLabel && <span className="text-gray-400">• {timeLabel}</span>}
+                  </div>
+                  <p className="whitespace-pre-wrap break-words">{msg.message}</p>
+                </div>
+              </div>
+            )
+          })
+        )}
+      </div>
+      <form onSubmit={handleSend} className="mt-3 flex gap-2">
+        <input
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Nachricht schreiben..."
+          className="input-field text-sm py-2"
+          maxLength={280}
+        />
+        <button type="submit" className="btn-primary btn-sm px-4" disabled={!message.trim()}>
+          Senden
+        </button>
+      </form>
     </div>
   )
 }
@@ -1079,35 +1184,39 @@ function Board() {
           </div>
 
           {/* Right Side - Info */}
-          <div className="card bg-slate-800/90">
-            <h3 className="text-lg font-semibold mb-3">Spielinfo</h3>
-            <div className="space-y-3">
-              <div className="p-3 bg-blue-500/10 rounded-lg">
-                <p className="text-sm text-blue-300 font-semibold mb-1">Spielablauf:</p>
-                <ol className="text-xs text-gray-300 space-y-1 list-decimal list-inside">
-                  <li>Ziehe einen Stein vom Stapel oder Ablage</li>
-                  <li>Ordne deine Steine</li>
-                  <li>Wähle einen Stein zum Abwerfen</li>
-                  <li>Entscheide: Zug beenden oder Gewinnen</li>
-                </ol>
-              </div>
-              <div className="p-3 bg-emerald-500/10 rounded-lg">
-                <p className="text-sm text-emerald-300 font-semibold mb-1">Regeln (Kurz):</p>
-                <ul className="text-xs text-gray-300 space-y-1 list-disc list-inside">
-                  <li>Ziel: Lege alle Steine in gültigen Gruppen ab.</li>
-                  <li>Hand: Du hältst 14 Steine, der Startspieler 15.</li>
-                  <li>Gültige Gruppen sind:</li>
-                </ul>
-                <ul className="mt-1 text-xs text-gray-300 space-y-1 list-disc list-inside ml-4">
-                  <li>Folge: gleiche Farbe, aufeinanderfolgende Zahlen (z.B. 5-6-7).</li>
-                  <li>Drilling/Vierer: gleiche Zahl in verschiedenen Farben.</li>
-                </ul>
-                <ul className="mt-1 text-xs text-gray-300 space-y-1 list-disc list-inside">
-                  <li>Joker (Okey) kann jeden Stein ersetzen.</li>
-                  <li>Gewinn: Nach dem Ziehen ordnest du deine Hand komplett in Gruppen und wirfst den letzten Stein ab.</li>
-                </ul>
+          <div className="space-y-4">
+            <div className="card bg-slate-800/90">
+              <h3 className="text-lg font-semibold mb-3">Spielinfo</h3>
+              <div className="space-y-3">
+                <div className="p-3 bg-blue-500/10 rounded-lg">
+                  <p className="text-sm text-blue-300 font-semibold mb-1">Spielablauf:</p>
+                  <ol className="text-xs text-gray-300 space-y-1 list-decimal list-inside">
+                    <li>Ziehe einen Stein vom Stapel oder Ablage</li>
+                    <li>Ordne deine Steine</li>
+                    <li>Wähle einen Stein zum Abwerfen</li>
+                    <li>Entscheide: Zug beenden oder Gewinnen</li>
+                  </ol>
+                </div>
+                <div className="p-3 bg-emerald-500/10 rounded-lg">
+                  <p className="text-sm text-emerald-300 font-semibold mb-1">Regeln (Kurz):</p>
+                  <ul className="text-xs text-gray-300 space-y-1 list-disc list-inside">
+                    <li>Ziel: Lege alle Steine in gültigen Gruppen ab.</li>
+                    <li>Hand: Du hältst 14 Steine, der Startspieler 15.</li>
+                    <li>Gültige Gruppen sind:</li>
+                  </ul>
+                  <ul className="mt-1 text-xs text-gray-300 space-y-1 list-disc list-inside ml-4">
+                    <li>Folge: gleiche Farbe, aufeinanderfolgende Zahlen (z.B. 5-6-7).</li>
+                    <li>Drilling/Vierer: gleiche Zahl in verschiedenen Farben.</li>
+                  </ul>
+                  <ul className="mt-1 text-xs text-gray-300 space-y-1 list-disc list-inside">
+                    <li>Joker (Okey) kann jeden Stein ersetzen.</li>
+                    <li>Gewinn: Nach dem Ziehen ordnest du deine Hand komplett in Gruppen und wirfst den letzten Stein ab.</li>
+                  </ul>
+                </div>
               </div>
             </div>
+
+            <ChatPanel roomId={gameState.roomId} title="Spiel-Chat" />
           </div>
         </div>
 
@@ -1180,47 +1289,51 @@ function Lobby() {
   if (currentRoom) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="card max-w-2xl w-full">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold">{currentRoom.name}</h2>
-              <p className="text-gray-400 text-sm">Raum-ID: {currentRoom.id.substring(0, 12)}...</p>
+        <div className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="card">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-bold">{currentRoom.name}</h2>
+                <p className="text-gray-400 text-sm">Raum-ID: {currentRoom.id.substring(0, 12)}...</p>
+              </div>
+              <button onClick={handleLeaveRoom} className="btn-danger">Verlassen</button>
             </div>
-            <button onClick={handleLeaveRoom} className="btn-danger">Verlassen</button>
-          </div>
 
-          <div className="space-y-4">
-            <div className="bg-slate-700/50 rounded-lg p-4">
-              <h3 className="font-semibold mb-3">Spieler ({roomPlayers.length}/{currentRoom.maxPlayers})</h3>
-              <div className="space-y-2">
-                {roomPlayers.map((player) => (
-                  <div key={player.id} className="flex items-center gap-3 bg-slate-600/50 rounded-lg p-3">
-                    <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
-                      {player.id === user?.id ? 'YOU' : 'AI'}
+            <div className="space-y-4">
+              <div className="bg-slate-700/50 rounded-lg p-4">
+                <h3 className="font-semibold mb-3">Spieler ({roomPlayers.length}/{currentRoom.maxPlayers})</h3>
+                <div className="space-y-2">
+                  {roomPlayers.map((player) => (
+                    <div key={player.id} className="flex items-center gap-3 bg-slate-600/50 rounded-lg p-3">
+                      <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                        {player.id === user?.id ? 'YOU' : 'AI'}
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium">{player.username}</p>
+                        {player.id === currentRoom.host && <span className="text-xs text-yellow-400">Host</span>}
+                      </div>
+                      {player.id === user?.id && <span className="badge badge-info">Du</span>}
                     </div>
-                    <div className="flex-1">
-                      <p className="font-medium">{player.username}</p>
-                      {player.id === currentRoom.host && <span className="text-xs text-yellow-400">Host</span>}
-                    </div>
-                    {player.id === user?.id && <span className="badge badge-info">Du</span>}
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                {currentRoom.host === user?.id && (
+                  <button onClick={handleStartGame} className="btn-primary w-full" disabled={currentRoom.players.length < 2}>
+                    Spiel starten ({currentRoom.players.length}/4 Spieler)
+                  </button>
+                )}
+                {currentRoom.host !== user?.id && (
+                  <div className="text-center w-full p-3 bg-slate-700/50 rounded-lg text-gray-400">
+                    Warte auf Host zum Starten...
                   </div>
-                ))}
+                )}
               </div>
             </div>
-
-            <div className="flex gap-2">
-              {currentRoom.host === user?.id && (
-                <button onClick={handleStartGame} className="btn-primary w-full" disabled={currentRoom.players.length < 2}>
-                  Spiel starten ({currentRoom.players.length}/4 Spieler)
-                </button>
-              )}
-              {currentRoom.host !== user?.id && (
-                <div className="text-center w-full p-3 bg-slate-700/50 rounded-lg text-gray-400">
-                  Warte auf Host zum Starten...
-                </div>
-              )}
-            </div>
           </div>
+
+          <ChatPanel roomId={currentRoom.id} title="Raum-Chat" />
         </div>
       </div>
     )

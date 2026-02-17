@@ -261,6 +261,7 @@ export const useGameStore = create((set, get) => ({
   selectedTiles: [],
   isLoading: false,
   error: null,
+  chatMessagesByRoom: {},
 
   setRooms: (rooms) => set({ rooms }),
 
@@ -346,6 +347,30 @@ export const useGameStore = create((set, get) => ({
 
   clearError: () => set({ error: null }),
 
+  addChatMessage: (roomId, message) => {
+    if (!roomId || !message) return
+    set((state) => {
+      const existing = state.chatMessagesByRoom?.[roomId] || []
+      const nextMessages = [...existing, message].slice(-200)
+      return {
+        chatMessagesByRoom: {
+          ...state.chatMessagesByRoom,
+          [roomId]: nextMessages
+        }
+      }
+    })
+  },
+
+  clearChatMessages: (roomId) => {
+    if (!roomId) return
+    set((state) => ({
+      chatMessagesByRoom: {
+        ...state.chatMessagesByRoom,
+        [roomId]: []
+      }
+    }))
+  },
+
   reset: () => set({
     rooms: [],
     currentRoom: null,
@@ -355,7 +380,8 @@ export const useGameStore = create((set, get) => ({
     isReady: false,
     selectedTiles: [],
     isLoading: false,
-    error: null
+    error: null,
+    chatMessagesByRoom: {}
   })
 }))
 
