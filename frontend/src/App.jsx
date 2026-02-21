@@ -64,9 +64,9 @@ function TileEditorModal({ isOpen, onClose, hand, onUpdateTile, onGenerateValidH
               className="btn-primary btn-sm"
               title="Generiert automatisch eine gültige 14-Steine Hand"
             >
-              ✨ Gültiges Okey generieren
+              Gültige Hand generieren
             </button>
-            <button onClick={onClose} className="btn-secondary btn-sm">✕ Schließen</button>
+            <button onClick={onClose} className="btn-secondary btn-sm">Schließen</button>
           </div>
         </div>
 
@@ -176,7 +176,7 @@ function TileEditorModal({ isOpen, onClose, hand, onUpdateTile, onGenerateValidH
                   onClick={handleApply}
                   className="btn-primary w-full"
                 >
-                  ✓ Änderungen übernehmen
+                  Änderungen übernehmen
                 </button>
               </div>
             )}
@@ -440,20 +440,20 @@ function PlayerHand({ tiles, onTilesReorder, onTileSelect, selectedTileId = null
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-lg font-semibold text-white">Deine Hand</h3>
         <div className="flex items-center gap-2">
-          <div className="flex bg-gray-700/50 rounded-lg p-1 gap-1">
+          <div className="flex bg-gray-700/40 rounded-lg p-1 gap-1">
              <button 
               onClick={() => handleSort('color')}
-              className="px-3 py-1 text-xs rounded-md bg-blue-600 hover:bg-blue-500 text-white transition-colors"
+              className="px-3 py-1 text-xs rounded-md bg-slate-600 hover:bg-slate-500 text-white transition-colors"
               title="Nach Farbe sortieren"
             >
-              🎨 Farbe
+              Farbe
             </button>
             <button 
               onClick={() => handleSort('number')}
-              className="px-3 py-1 text-xs rounded-md bg-purple-600 hover:bg-purple-500 text-white transition-colors"
+              className="px-3 py-1 text-xs rounded-md bg-slate-600 hover:bg-slate-500 text-white transition-colors"
               title="Nach Zahl sortieren"
             >
-              🔢 Zahl
+              Zahl
             </button>
           </div>
           <span className="badge badge-info">{items?.filter(Boolean).length || 0} Steine</span>
@@ -468,7 +468,7 @@ function PlayerHand({ tiles, onTilesReorder, onTileSelect, selectedTileId = null
         )}
         
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-          <div className="rounded-2xl p-3 bg-gradient-to-b from-amber-900/25 via-slate-900/20 to-amber-950/30 border border-amber-700/20 shadow-inner">
+          <div className="rounded-2xl p-3 bg-slate-900/40 border border-slate-700/40 shadow-inner">
             <div className="flex flex-col gap-2">
               <div className="flex gap-2 items-start">{renderRow(0, 10)}</div>
               <div className="flex gap-2 items-start">{renderRow(10, 10)}</div>
@@ -528,7 +528,6 @@ function DiscardPile({ tiles, onDrawFromDiscard, canDraw = false }) {
           </div>
         ) : (
           <div className="text-center text-gray-500">
-            <div className="text-4xl mb-2">🃏</div>
             <p className="text-sm">Leer</p>
           </div>
         )}
@@ -640,10 +639,9 @@ function Header({ isConnected, connectionStatus }) {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="text-3xl font-bold">OKEY</div>
+            <div className="text-3xl font-bold text-white">OKEY</div>
             <div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Okey Multiplayer</h1>
-              <p className="text-xs text-gray-400">Türkisches Rommé</p>
+              <h1 className="text-xl font-bold text-white">Okey Multiplayer</h1>
             </div>
           </div>
 
@@ -677,18 +675,12 @@ function Footer() {
   return (
     <footer className="bg-slate-800/30 border-t border-slate-700 py-6 mt-auto">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-center sm:text-left">
-            <p className="text-sm text-gray-400">Okey Multiplayer - Semesterprojekt 2025/26</p>
-            <p className="text-xs text-gray-500">Entwickelt mit React, Node.js & Socket.io</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-              <span className="text-xl">📂</span>
+        <div className="flex items-center justify-center sm:justify-end gap-4">
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors text-sm font-medium">
+              GitHub
             </a>
             <span className="text-gray-600">|</span>
             <span className="text-xs text-gray-500">v1.0.0</span>
-          </div>
         </div>
       </div>
     </footer>
@@ -714,7 +706,7 @@ function CreateRoom({ onClose, onCreate }) {
       <div className="card max-w-md w-full animate-slide-in">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Neuen Raum erstellen</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-white text-2xl">✕</button>
+          <button onClick={onClose} className="text-gray-400 hover:text-white text-sm font-medium">Schließen</button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -767,9 +759,8 @@ function RoomList({ rooms, onJoinRoom }) {
   if (!rooms || rooms.length === 0) {
     return (
       <div className="card text-center py-12">
-        <div className="text-6xl mb-4">🎲</div>
         <h3 className="text-xl font-semibold mb-2">Keine Räume verfügbar</h3>
-        <p className="text-gray-400">Erstelle einen neuen Raum, um zu spielen!</p>
+        <p className="text-gray-400">Erstelle einen neuen Raum, um zu spielen.</p>
       </div>
     )
   }
@@ -814,7 +805,7 @@ function RoomCard({ room, onJoin }) {
                 i < room.players.length ? 'bg-blue-600 text-white' : 'bg-slate-700 text-gray-500'
               }`}
             >
-              {i < room.players.length ? '👤' : ''}
+              {i + 1}
             </div>
           ))}
         </div>
@@ -861,7 +852,7 @@ function Board() {
   useEffect(() => {
     const unsubscribeGameStateUpdated = socketService.on('game_state_updated', (data) => {
       if (data?.gameState) {
-        console.log('📥 Frontend: Empfangene game_state_updated')
+        console.log('Frontend: Empfangene game_state_updated')
         setGameState(data.gameState)
         // Nicht mehr clearen - gameState ist die Source of Truth
       }
@@ -869,7 +860,7 @@ function Board() {
 
     const unsubscribeGameOver = socketService.on('gameOver', (data) => {
       const winnerName = data?.winnerName || 'Unbekannt'
-      alert(`🎉 Spiel vorbei! ${winnerName} hat gewonnen!`)
+      alert(`Spiel vorbei! ${winnerName} hat gewonnen!`)
       if (data?.gameState) {
         setGameState(data.gameState)
       }
@@ -998,7 +989,7 @@ function Board() {
     // Update DIREKT im gameState
     const updatedPlayers = gameState.players.map(p => {
       if (p.id === user?.id) {
-        console.log('✨ Frontend: Generiere gültige Hand lokal, sende an Server')
+        console.log('Frontend: Generiere gültige Hand lokal, sende an Server')
         socketService.updateDevHand(gameState.roomId, validHand)
         return { ...p, hand: validHand }
       }
@@ -1008,7 +999,7 @@ function Board() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-board-dark via-board-green to-board-dark p-4">
+    <div className="min-h-screen bg-board-dark p-4">
       <TileEditorModal
         isOpen={devModeOpen}
         onClose={() => setDevModeOpen(false)}
@@ -1091,10 +1082,10 @@ function Board() {
                 <div className="relative">
                   <div className="absolute -right-2 -top-2 w-16 h-22 bg-blue-600/30 rounded-lg"></div>
                   <div className="absolute -right-1 -top-1 w-16 h-22 bg-blue-600/50 rounded-lg"></div>
-                  <div className={`w-16 h-22 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold border-2 ${
+                  <div className={`w-16 h-22 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold border-2 text-[10px] tracking-wider uppercase ${
                     canDraw ? 'border-green-400 shadow-lg shadow-green-500/50' : 'border-blue-400'
                   }`}>
-                    🎴
+                    Stapel
                   </div>
                 </div>
                 <p className="text-sm text-gray-400 mt-3">{gameState.deckSize} Steine</p>
@@ -1103,7 +1094,7 @@ function Board() {
                   disabled={!canDraw}
                   className={`btn-sm mt-3 ${canDraw ? 'btn-primary' : 'btn-disabled'}`}
                 >
-                  {canDraw ? '✓ Ziehen' : '✗ Nicht verfügbar'}
+                  {canDraw ? 'Ziehen' : 'Nicht verfügbar'}
                 </button>
               </div>
             </div>
@@ -1328,7 +1319,7 @@ function Lobby() {
             <span className="text-xl">+</span>Raum erstellen
           </button>
           <button onClick={() => socketService.getRooms()} className="btn-secondary flex items-center gap-2">
-            <span className="text-xl">🔄</span>Aktualisieren
+            Aktualisieren
           </button>
         </div>
 

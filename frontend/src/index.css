@@ -18,25 +18,25 @@
 @layer components {
   .btn-primary {
     @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg 
-           transition-all duration-200 shadow-lg hover:shadow-xl 
+           transition-colors duration-200 
            active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-secondary {
     @apply bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-6 rounded-lg 
-           transition-all duration-200 shadow-md hover:shadow-lg 
+           transition-colors duration-200 
            active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-success {
     @apply bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg 
-           transition-all duration-200 shadow-lg hover:shadow-xl 
+           transition-colors duration-200 
            active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-danger {
     @apply bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg 
-           transition-all duration-200 shadow-lg hover:shadow-xl 
+           transition-colors duration-200 
            active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
@@ -50,14 +50,14 @@
   }
 
   .card {
-    @apply bg-[#192734] backdrop-blur-sm rounded-xl shadow-2xl p-6 border border-[#38444d];
+    @apply bg-[#192734] rounded-xl shadow-lg p-6 border border-[#2f3b45];
   }
 
   .input-field {
-    @apply w-full px-4 py-3 bg-[#192734] border border-[#38444d] rounded-lg 
+    @apply w-full px-4 py-3 bg-[#192734] border border-[#2f3b45] rounded-lg 
            text-white placeholder-gray-400 
            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
-           transition-all duration-200;
+           transition-colors duration-200;
   }
 
   .badge {

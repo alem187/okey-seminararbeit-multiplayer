@@ -32,12 +32,12 @@ class SocketService {
     })
 
     this.socket.on('connect', () => {
-      console.log('✅ Mit Server verbunden:', this.socket.id)
+      console.log('Mit Server verbunden:', this.socket.id)
       this.emit('connectionStatusChanged', 'connected')
     })
 
     this.socket.on('disconnect', (reason) => {
-      console.log('❌ Vom Server getrennt:', reason)
+      console.log('Vom Server getrennt:', reason)
       this.emit('connectionStatusChanged', 'disconnected')
     })
 
@@ -47,16 +47,16 @@ class SocketService {
     })
 
     this.socket.on('reconnect', (attemptNumber) => {
-      console.log('🔄 Erneut verbunden nach', attemptNumber, 'Versuchen')
+      console.log('Erneut verbunden nach', attemptNumber, 'Versuchen')
     })
 
     this.socket.on('reconnect_attempt', (attemptNumber) => {
-      console.log('🔄 Reconnection-Versuch:', attemptNumber)
+      console.log('Reconnection-Versuch:', attemptNumber)
       this.emit('connectionStatusChanged', 'connecting')
     })
 
     this.socket.on('reconnect_failed', () => {
-      console.error('❌ Wiederverbindung fehlgeschlagen')
+      console.error('Wiederverbindung fehlgeschlagen')
       this.emit('connectionStatusChanged', 'failed')
     })
 
@@ -310,7 +310,7 @@ export const useGameStore = create((set, get) => ({
   })),
 
   setGameState: (gameState) => {
-    console.log('🎮 Stelle Spielzustand im Store ein:', {
+    console.log('Stelle Spielzustand im Store ein:', {
       turnNumber: gameState?.turnNumber,
       currentPlayerId: gameState?.currentPlayerId,
       playersCount: gameState?.players?.length
