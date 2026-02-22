@@ -1,8 +1,3 @@
-/**
- * Frontend-spezifische Konstanten
- * Importiert geteilte Konstanten vom Backend
- */
-
 // Diese Werte spiegeln die Backend-Konstanten wider
 export const GAME_CONFIG = {
   MIN_PLAYERS: 2,

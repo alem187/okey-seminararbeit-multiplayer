@@ -1,17 +1,12 @@
-/**
- * Konsolidierter Store, Services und Hooks
- * Alle Zustand Stores, Socket-Service und Custom Hooks in einer Datei
- */
-
 import { useState, useEffect, useCallback } from 'react'
 import { create } from 'zustand'
 import { io } from 'socket.io-client'
 
 const SERVER_URL = 'https://okey-seminararbeit-multiplayer.onrender.com'
 
-// ==========================================
+
 // SOCKET-SERVICE
-// ==========================================
+
 class SocketService {
   constructor() {
     this.socket = null
@@ -216,9 +211,9 @@ class SocketService {
 
 export const socketService = new SocketService()
 
-// ==========================================
+
 // BENUTZER-STORE
-// ==========================================
+
 export const useUserStore = create((set) => ({
   user: null,
   isRegistered: false,
@@ -248,9 +243,9 @@ export const useUserStore = create((set) => ({
   }
 }))
 
-// ==========================================
+
 // SPIEL-STORE
-// ==========================================
+
 export const useGameStore = create((set, get) => ({
   rooms: [],
   currentRoom: null,
@@ -385,9 +380,9 @@ export const useGameStore = create((set, get) => ({
   })
 }))
 
-// ==========================================
+
 // BENUTZERDEFINIERTER HOOK: useSocket
-// ==========================================
+
 export function useSocket() {
   const [isConnected, setIsConnected] = useState(false)
   const [connectionStatus, setConnectionStatus] = useState('disconnected')

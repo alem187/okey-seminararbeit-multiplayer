@@ -1,17 +1,11 @@
-/**
- * Okey Multiplayer Spiel-Server
- * Hauptserverdatei mit Socket.io Integration
- * Alle Modelle, Services und Utilities konsolidiert hier
- */
-
 const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
 const cors = require('cors');
 
-// ==========================================
+
 // LOGGER-DIENSTPROGRAMM
-// ==========================================
+
 const LOG_LEVELS = {
   ERROR: 'ERROR',
   WARN: 'WARN',
@@ -51,9 +45,9 @@ class Logger {
 
 const logger = new Logger();
 
-// ==========================================
+
 // STEIN-MODELL
-// ==========================================
+
 class Tile {
   constructor(id, color, number, isJoker = false) {
     this.id = id
@@ -99,9 +93,9 @@ class Tile {
   }
 }
 
-// ==========================================
+
 // SPIELER-MODELL
-// ==========================================
+
 class Player {
   constructor(id, username) {
     this.id = id
@@ -158,9 +152,9 @@ class Player {
   }
 }
 
-// ==========================================
+
 // SPIEL-MODELL
-// ==========================================
+
 class Game {
   constructor(roomId, players) {
     this.roomId = roomId
@@ -234,9 +228,9 @@ class Game {
   }
 }
 
-// ==========================================
+
 // STEIN-SERVICE
-// ==========================================
+
 const COLORS = ['red', 'black', 'blue', 'yellow']
 const NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 
@@ -306,9 +300,9 @@ class TileService {
   }
 }
 
-// ==========================================
+
 // VALIDIERUNGS-SERVICE
-// ==========================================
+
 class ValidationService {
   static validateHand(hand, joker, indicator) {
     if (!hand || hand.length !== 14) return false
@@ -439,9 +433,9 @@ class ValidationService {
   }
 }
 
-// ==========================================
+
 // SPIEL-SERVICE
-// ==========================================
+
 class GameService {
   constructor() {
     this.games = new Map()
@@ -917,9 +911,6 @@ io.on('connection', (socket) => {
   });
 });
 
-/**
- * Hilfsfunktion um Spieler zu behandeln, der Raum verlässt
- */
 function handlePlayerLeaveRoom(socket) {
   const player = players.get(socket.id);
   if (!player || !player.roomId) return;
@@ -961,9 +952,6 @@ function handlePlayerLeaveRoom(socket) {
   io.emit('rooms_updated', Array.from(rooms.values()));
 }
 
-/**
- * Hilfsfunktion zur Behandlung von Spieler-Disconnect
- */
 function handlePlayerDisconnect(socket) {
   handlePlayerLeaveRoom(socket);
   players.delete(socket.id);

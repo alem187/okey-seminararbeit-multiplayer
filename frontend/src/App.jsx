@@ -1,8 +1,3 @@
-/**
- * Konsolidierte App-Komponente
- * Alle Komponenten in eine Datei integriert
- */
-
 import { useEffect, useRef, useState } from 'react'
 import { socketService, useSocket, useUserStore, useGameStore } from './store'
 import { 
@@ -18,9 +13,9 @@ import {
  
 import { CSS } from '@dnd-kit/utilities'
 
-// ==========================================
+
 // STEIN-EDITOR MODAL (DEV-MODUS)
-// ==========================================
+
 function TileEditorModal({ isOpen, onClose, hand, onUpdateTile, onGenerateValidHand }) {
   const [selectedIndex, setSelectedIndex] = useState(null)
   const [editColor, setEditColor] = useState('red')
@@ -187,9 +182,9 @@ function TileEditorModal({ isOpen, onClose, hand, onUpdateTile, onGenerateValidH
   )
 }
 
-// ==========================================
+
 // STEIN-KOMPONENTE
-// ==========================================
+
 function Tile({ tile, isDraggable = true, isSelected = false, onClick = null, size = 'md' }) {
   const isValidTile = Boolean(tile && tile.id)
 
@@ -260,9 +255,9 @@ function Tile({ tile, isDraggable = true, isSelected = false, onClick = null, si
   )
 }
 
-// ==========================================
+
 // SPIELERHAND-KOMPONENTE
-// ==========================================
+
 function PlayerHand({ tiles, onTilesReorder, onTileSelect, selectedTileId = null, canDiscard = false }) {
   const validTiles = Array.isArray(tiles) ? tiles.filter(t => t && t.id && typeof t.id === 'string') : []
   const rackSlotCount = 20
@@ -492,9 +487,9 @@ function PlayerHand({ tiles, onTilesReorder, onTileSelect, selectedTileId = null
   )
 }
 
-// ==========================================
+
 // ABLAGESTAPEL-KOMPONENTE
-// ==========================================
+
 function DiscardPile({ tiles, onDrawFromDiscard, canDraw = false }) {
   const topTile = tiles.length > 0 ? tiles[tiles.length - 1] : null
 
@@ -549,9 +544,9 @@ function DiscardPile({ tiles, onDrawFromDiscard, canDraw = false }) {
   )
 }
 
-// ==========================================
+
 // CHAT-PANEL-KOMPONENTE
-// ==========================================
+
 function ChatPanel({ roomId, title = 'Chat' }) {
   const { user } = useUserStore()
   const chatMessagesByRoom = useGameStore((state) => state.chatMessagesByRoom)
@@ -628,9 +623,9 @@ function ChatPanel({ roomId, title = 'Chat' }) {
   )
 }
 
-// ==========================================
+
 // KOPFZEILEN-KOMPONENTE
-// ==========================================
+
 function Header({ isConnected, connectionStatus }) {
   const { user } = useUserStore()
 
@@ -668,9 +663,9 @@ function Header({ isConnected, connectionStatus }) {
   )
 }
 
-// ==========================================
+
 // FUSSZEILEN-KOMPONENTE
-// ==========================================
+
 function Footer() {
   return (
     <footer className="bg-slate-800/30 border-t border-slate-700 py-6 mt-auto">
@@ -687,9 +682,9 @@ function Footer() {
   )
 }
 
-// ==========================================
+
 // RAUM ERSTELLEN - KOMPONENTE
-// ==========================================
+
 function CreateRoom({ onClose, onCreate }) {
   const [roomName, setRoomName] = useState('')
   const [maxPlayers, setMaxPlayers] = useState(4)
@@ -752,9 +747,9 @@ function CreateRoom({ onClose, onCreate }) {
   )
 }
 
-// ==========================================
+
 // RAUMLISTEN-KOMPONENTE
-// ==========================================
+
 function RoomList({ rooms, onJoinRoom }) {
   if (!rooms || rooms.length === 0) {
     return (
@@ -829,9 +824,9 @@ function RoomCard({ room, onJoin }) {
   )
 }
 
-// ==========================================
+
 // SPIELBRETT-KOMPONENTE (SPIEL)
-// ==========================================
+
 function Board() {
   const { gameState, setGameState } = useGameStore()
   const { user } = useUserStore()
@@ -1200,9 +1195,9 @@ function Board() {
   )
 }
 
-// ==========================================
+
 // LOBBY-KOMPONENTE
-// ==========================================
+
 function Lobby() {
   const [showCreateRoom, setShowCreateRoom] = useState(false)
   const { rooms, currentRoom, gameState, isPlaying, setRooms, setCurrentRoom, clearCurrentRoom, setGameState, setIsPlaying } = useGameStore()
@@ -1331,9 +1326,9 @@ function Lobby() {
   )
 }
 
-// ==========================================
+
 // HAUPT-APP-KOMPONENTE
-// ==========================================
+
 function App() {
   const { isConnected, connectionStatus, subscribe } = useSocket()
   const { user, isRegistered, setUser } = useUserStore()

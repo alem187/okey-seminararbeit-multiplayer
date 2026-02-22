@@ -1,8 +1,3 @@
-/**
- * Gemeinsame Konstanten für Backend und Frontend
- * Diese Datei kann von beiden Seiten importiert werden
- */
-
 // Spiel-Konfiguration
 const GAME_CONFIG = {
   MIN_PLAYERS: 2,
