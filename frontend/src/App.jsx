@@ -676,11 +676,11 @@ function Footer() {
     <footer className="bg-slate-800/30 border-t border-slate-700 py-6 mt-auto">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-center sm:justify-end gap-4">
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors text-sm font-medium">
+            <a href="https://github.com/alem187/okey-seminararbeit-multiplayer.git" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors text-sm font-medium">
               GitHub
             </a>
             <span className="text-gray-600">|</span>
-            <span className="text-xs text-gray-500">v1.0.0</span>
+            <span className="text-xs text-gray-500">v1.1.0</span>
         </div>
       </div>
     </footer>
@@ -1373,7 +1373,6 @@ function App() {
               <h1 className="text-4xl font-bold mb-2 text-white">
                 Okey Multiplayer
               </h1>
-              <p className="text-gray-400">Türkisches Rommé Online</p>
             </div>
 
             <form onSubmit={handleRegister} className="space-y-4">
@@ -1408,7 +1407,6 @@ function App() {
             {/* Connection Info */}
             <div className="pt-4 border-t border-slate-700">
               <p className="text-xs text-gray-500 text-center">
-                WebSocket Verbindung zu localhost:3001
               </p>
             </div>
           </div>
