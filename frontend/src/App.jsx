@@ -14,13 +14,12 @@ import {
 import { CSS } from '@dnd-kit/utilities'
 
 
-// STEIN-EDITOR MODAL (DEV-MODUS)
+// Stein-Editor (Dev-Modus)
 
 function TileEditorModal({ isOpen, onClose, hand, onUpdateTile, onGenerateValidHand }) {
   const [selectedIndex, setSelectedIndex] = useState(null)
   const [editColor, setEditColor] = useState('red')
   const [editNumber, setEditNumber] = useState(1)
-  const [editIsJoker, setEditIsJoker] = useState(false)
 
   if (!isOpen) return null
 
@@ -33,7 +32,7 @@ function TileEditorModal({ isOpen, onClose, hand, onUpdateTile, onGenerateValidH
     if (tile) {
       setEditColor(tile.color || 'red')
       setEditNumber(tile.number || 1)
-      setEditIsJoker(tile.isJoker || false)
+      // Joker nicht manuell setzen
     }
   }
 
@@ -41,8 +40,7 @@ function TileEditorModal({ isOpen, onClose, hand, onUpdateTile, onGenerateValidH
     if (selectedIndex !== null) {
       onUpdateTile(selectedIndex, {
         color: editColor,
-        number: editNumber,
-        isJoker: editIsJoker
+        number: editNumber
       })
       setSelectedIndex(null)
     }
@@ -137,36 +135,7 @@ function TileEditorModal({ isOpen, onClose, hand, onUpdateTile, onGenerateValidH
                   </div>
                 </div>
 
-                {/* Spezielle Steine */}
-                <div className="space-y-2">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={editIsJoker}
-                      onChange={(e) => setEditIsJoker(e.target.checked)}
-                      className="w-5 h-5 rounded border-gray-600"
-                    />
-                    <span>Als Joker markieren</span>
-                  </label>
-                </div>
-
-                {/* Vorschau */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">Vorschau</label>
-                  <div className="flex justify-center p-4 bg-black/30 rounded-lg">
-                    <Tile
-                      tile={{
-                        id: 'preview',
-                        color: editColor,
-                        number: editNumber,
-                        isJoker: editIsJoker
-                      }}
-                      isDraggable={false}
-                    />
-                  </div>
-                </div>
-
-                {/* Anwenden-Button */}
+                {/* Anwenden */}
                 <button
                   onClick={handleApply}
                   className="btn-primary w-full"
@@ -183,7 +152,7 @@ function TileEditorModal({ isOpen, onClose, hand, onUpdateTile, onGenerateValidH
 }
 
 
-// STEIN-KOMPONENTE
+// Stein-Komponente
 
 function Tile({ tile, isDraggable = true, isSelected = false, onClick = null, size = 'md' }) {
   const isValidTile = Boolean(tile && tile.id)
@@ -256,7 +225,7 @@ function Tile({ tile, isDraggable = true, isSelected = false, onClick = null, si
 }
 
 
-// SPIELERHAND-KOMPONENTE
+// Spielerhand-Komponente
 
 function PlayerHand({ tiles, onTilesReorder, onTileSelect, selectedTileId = null, canDiscard = false }) {
   const validTiles = Array.isArray(tiles) ? tiles.filter(t => t && t.id && typeof t.id === 'string') : []
@@ -488,7 +457,7 @@ function PlayerHand({ tiles, onTilesReorder, onTileSelect, selectedTileId = null
 }
 
 
-// ABLAGESTAPEL-KOMPONENTE
+// Ablagestapel-Komponente
 
 function DiscardPile({ tiles, onDrawFromDiscard, canDraw = false }) {
   const topTile = tiles.length > 0 ? tiles[tiles.length - 1] : null
@@ -545,7 +514,7 @@ function DiscardPile({ tiles, onDrawFromDiscard, canDraw = false }) {
 }
 
 
-// CHAT-PANEL-KOMPONENTE
+// Chat-Panel-Komponente
 
 function ChatPanel({ roomId, title = 'Chat' }) {
   const { user } = useUserStore()
@@ -624,7 +593,7 @@ function ChatPanel({ roomId, title = 'Chat' }) {
 }
 
 
-// KOPFZEILEN-KOMPONENTE
+// Kopfzeilen-Komponente
 
 function Header({ isConnected, connectionStatus }) {
   const { user } = useUserStore()
@@ -664,7 +633,7 @@ function Header({ isConnected, connectionStatus }) {
 }
 
 
-// FUSSZEILEN-KOMPONENTE
+// Fußzeilen-Komponente
 
 function Footer() {
   return (
@@ -683,7 +652,7 @@ function Footer() {
 }
 
 
-// RAUM ERSTELLEN - KOMPONENTE
+// Raum erstellen-Komponente
 
 function CreateRoom({ onClose, onCreate }) {
   const [roomName, setRoomName] = useState('')
@@ -748,7 +717,7 @@ function CreateRoom({ onClose, onCreate }) {
 }
 
 
-// RAUMLISTEN-KOMPONENTE
+// Raumlisten-Komponente
 
 function RoomList({ rooms, onJoinRoom }) {
   if (!rooms || rooms.length === 0) {
@@ -825,7 +794,7 @@ function RoomCard({ room, onJoin }) {
 }
 
 
-// SPIELBRETT-KOMPONENTE (SPIEL)
+// Spielbrett-Komponente (Spiel)
 
 function Board() {
   const { gameState, setGameState } = useGameStore()
@@ -849,7 +818,7 @@ function Board() {
       if (data?.gameState) {
         console.log('Frontend: Empfangene game_state_updated')
         setGameState(data.gameState)
-        // Nicht mehr clearen - gameState ist die Source of Truth
+        // gameState bleibt Source of Truth
       }
     })
 
@@ -867,7 +836,7 @@ function Board() {
     }
   }, [setGameState])
 
-  // Dev-Modus Tastaturkürzel: Ctrl+Shift+D
+  // Dev-Modus: Ctrl+Shift+D
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.ctrlKey && e.shiftKey && e.key === 'D') {
@@ -892,7 +861,7 @@ function Board() {
     )
   }
 
-  // Verwende DIREKT gameState, nicht devHandOverride
+  // Nutze direkt gameState, nicht devHandOverride
   const actualHand = currentPlayer.hand
 
   const isMyTurn = gameState.currentPlayerId === user?.id
@@ -936,7 +905,7 @@ function Board() {
   }
 
   const handleUpdateTile = (index, newTileData) => {
-    // Aktualisiere DIREKT im gameState, nicht im Override
+    // Aktualisiere direkt im gameState, nicht im Override
     const updatedPlayers = gameState.players.map(p => {
       if (p.id === user?.id) {
         const updatedHand = [...p.hand]
@@ -946,7 +915,7 @@ function Board() {
           ...newTileData
         }
         console.log(`Frontend: Aktualisiere Stein ${index} lokal, sende an Server:`, updatedHand.map(t => t.id))
-        // Sende an Server
+        // An Server senden
         socketService.updateDevHand(gameState.roomId, updatedHand)
         // Lokal im State aktualisieren
         return { ...p, hand: updatedHand }
@@ -957,7 +926,7 @@ function Board() {
   }
 
   const handleGenerateValidHand = () => {
-    // Generiere eine gültige 15-Steine Hand
+    // Generiere gültige 15-Steine-Hand
     const validHand = [
       // Rot 1-2-3
       { id: 'dev_tile_0', color: 'red', number: 1, isJoker: false },
@@ -977,11 +946,11 @@ function Board() {
       { id: 'dev_tile_11', color: 'yellow', number: 12, isJoker: false },
       { id: 'dev_tile_12', color: 'yellow', number: 13, isJoker: false },
       { id: 'dev_tile_13', color: 'yellow', number: 1, isJoker: false },
-      // EXTRA Stein zum Abwerfen
+      // Extra-Stein zum Abwerfen
       { id: 'dev_tile_14', color: 'red', number: 5, isJoker: false }
     ]
     
-    // Update DIREKT im gameState
+    // Direkte Aktualisierung im gameState
     const updatedPlayers = gameState.players.map(p => {
       if (p.id === user?.id) {
         console.log('Frontend: Generiere gültige Hand lokal, sende an Server')
@@ -1003,7 +972,7 @@ function Board() {
         onGenerateValidHand={handleGenerateValidHand}
       />
       
-      <div className="max-w-7xl mx-auto space-y-4">{/* Dev Mode Hint */}
+      <div className="max-w-7xl mx-auto space-y-4">{/* Hinweis Dev-Modus */}
         {devModeOpen && (
           <div className="card bg-yellow-500/10 border-2 border-yellow-500/50">
             <div className="flex items-center gap-3">
@@ -1015,7 +984,7 @@ function Board() {
             </div>
           </div>
         )}
-        {/* Player's Hand */}
+        {/* Spielerhand */}
         <PlayerHand
           tiles={actualHand || []}
           onTilesReorder={handleTilesReorder}
@@ -1024,7 +993,7 @@ function Board() {
           canDiscard={isMyTurn && currentPlayer?.hasDrawn}
         />
 
-        {/* Game Header */}
+        {/* Spielkopf */}
         <div className="card bg-slate-800/90">
           <div className="flex items-center justify-between">
             <div className="flex-1">
@@ -1040,36 +1009,12 @@ function Board() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              {gameState.indicator && (
-                <div className="text-center">
-                  <p className="text-xs text-gray-400 mb-1">Indikator</p>
-                  <Tile tile={gameState.indicator} isDraggable={false} size="sm" />
-                </div>
-              )}
-
-              {gameState.joker && (
-                <div className="text-center">
-                  <p className="text-xs text-yellow-400 mb-1">Okey (Joker)</p>
-                  <Tile 
-                    tile={{
-                      id: 'joker-display',
-                      color: gameState.joker.color,
-                      number: gameState.joker.number,
-                      isJoker: true
-                    }} 
-                    isDraggable={false} 
-                    size="sm" 
-                  />
-                </div>
-              )}
-            </div>
           </div>
         </div>
 
-        {/* Game Board */}
+        {/* Spielbrett */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* Left Side - Deck & Discard */}
+          {/* Links: Stapel & Ablage */}
           <div className="space-y-4">
             <div className="card bg-board-dark border-board-green">
               <h3 className="text-lg font-semibold mb-3">Nachziehstapel</h3>
@@ -1101,7 +1046,7 @@ function Board() {
             />
           </div>
 
-          {/* Center - Other Players */}
+          {/* Mitte: Andere Spieler */}
           <div className="space-y-4">
             <div className="card bg-slate-800/90">
               <h3 className="text-lg font-semibold mb-3">Andere Spieler</h3>
@@ -1153,7 +1098,7 @@ function Board() {
             )}
           </div>
 
-          {/* Right Side - Info */}
+          {/* Rechts: Info */}
           <div className="space-y-4">
             <div className="card bg-slate-800/90">
               <h3 className="text-lg font-semibold mb-3">Spielinfo</h3>
@@ -1196,7 +1141,7 @@ function Board() {
 }
 
 
-// LOBBY-KOMPONENTE
+// Lobby-Komponente
 
 function Lobby() {
   const [showCreateRoom, setShowCreateRoom] = useState(false)
@@ -1327,7 +1272,7 @@ function Lobby() {
 }
 
 
-// HAUPT-APP-KOMPONENTE
+// Haupt-App-Komponente
 
 function App() {
   const { isConnected, connectionStatus, subscribe } = useSocket()
@@ -1356,7 +1301,7 @@ function App() {
     }
   }
 
-  // Show registration screen if not registered
+  // Registrierung anzeigen, wenn nicht angemeldet
   if (!isRegistered) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -1399,7 +1344,7 @@ function App() {
               </button>
             </form>
 
-            {/* Connection Info */}
+            {/* Verbindungsinfo */}
             <div className="pt-4 border-t border-slate-700">
               <p className="text-xs text-gray-500 text-center">
               </p>

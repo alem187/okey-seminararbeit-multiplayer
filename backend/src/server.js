@@ -267,11 +267,9 @@ class TileService {
 
   static markJokerTiles(deck, jokerInfo) {
     return deck.map(tile => {
-      // Normale Steine, die den Joker-Wert haben, werden zu Jokern
-      if (tile.color === jokerInfo.color && tile.number === jokerInfo.number) {
-        tile.isJoker = true
-      }
-      return tile
+      // Nur echte Joker
+      tile.isJoker = (tile.color === jokerInfo.color && tile.number === jokerInfo.number);
+      return tile;
     })
   }
 
@@ -307,15 +305,16 @@ class ValidationService {
   static validateHand(hand, joker, indicator) {
     if (!hand || hand.length !== 14) return false
     const tiles = []
-    const wildcards = []
+    let wildcards = 0
     hand.forEach(t => {
+      // Nur echte Joker (korrekte Farbe und Zahl) zählen als Joker
       if (t.isJoker) {
-        wildcards.push(t)
+        wildcards++
       } else {
         tiles.push({ ...t, isWildcard: false })
       }
     })
-    return this.canPartition(tiles, wildcards.length)
+    return this.canPartition(tiles, wildcards)
   }
 
   static canPartition(tiles, wildcardCount) {
