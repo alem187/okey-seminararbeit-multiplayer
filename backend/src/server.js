@@ -450,8 +450,24 @@ class GameService {
     game.indicator = indicator
     game.joker = joker
     const { hands, remainingDeck } = TileService.dealTiles(finalDeck, players.length, 14)
+
+    // Der erste Spieler (Index 0) erhält einen zusätzlichen Stein (15 Steine),
+    // damit er das Spiel beginnen kann, indem er einen abwirft.
+    if (remainingDeck.length > 0) {
+      hands[0].push(remainingDeck.pop())
+    }
+
     game.players.forEach((player, index) => {
       player.hand = TileService.sortTiles(hands[index])
+      
+      // Der erste Spieler (Index 0) startet das Spiel und hat bereits 15 Steine.
+      // Er muss daher als ersten Zug abwerfen.
+      // Wir setzen hasDrawn = true, damit er nicht ziehen muss/kann.
+      if (index === 0) {
+        player.hasDrawn = true
+        // Setze currentPlayerIndex explizit auf 0 (obwohl Standard), um sicherzugehen
+        game.currentPlayerIndex = 0
+      }
     })
     game.deck = remainingDeck
     this.games.set(roomId, game)

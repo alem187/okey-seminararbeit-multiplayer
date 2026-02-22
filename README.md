@@ -119,15 +119,15 @@ Die containerisierte App kann einfach deployed werden auf:
 **Okey** ist ein traditionelles türkisches Kachelspiel, ähnlich wie Rommé.
 
 ### Spielmaterial
-- **106 Steine:** 4 Farben (Rot, Schwarz, Blau, Gelb) × 13 Zahlen × 2 Sets
-- **2 Joker** (falsche Joker)
+- **104 Steine:** 4 Farben (Rot, Schwarz, Blau, Gelb) × 13 Zahlen × 2 Sets
+- **Dynamische Joker:** Jeweils 2 Steine pro Farbe und Zahl, wobei einer als Joker fungiert (abhängig vom Spiel. Wird automatisch bestimmt).
 
 ### Spielablauf
 1. Jeder Spieler erhält **14 Steine**
-2. Ein **Indikator-Stein** wird gezogen → bestimmt den **Okey (Joker)**
-3. Spieler ziehen abwechselnd einen Stein (vom Stapel oder Ablage)
+2. Ein **Joker** wird bestimmt (automatisch durch das System)
+3. Der aktive Spieler zieht einen Stein (vom Stapel oder Ablage)
 4. Danach muss ein Stein abgeworfen werden
-5. Ziel: Alle 14 Steine in gültige Kombinationen bringen
+5. Ziel: Alle 14 Steine in gültige Kombinationen bringen (und den 15. Stein abwerfen)
 
 ### Gewinn-Bedingungen
 Um zu gewinnen, müssen alle 14 Steine in folgenden Kombinationen organisiert sein:
